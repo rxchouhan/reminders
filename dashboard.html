@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reminders Dashboard - GitHub Hosted</title>
+  <style>
+    /* Basic styling for the GitHub hosted page */
+    :root {
+      --bg-color: #f5f7fb;
+      --primary: #007acc;
+      --text-main: #333333;
+      --border-color: #e0e0e0;
+      --touch-target-min-height: 40px;
+    }
+    body {
+      margin: 0;
+      padding: 1rem;
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .page-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header.main-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      width: 100%;
+    }
+     @media (min-width: 600px) {
+      header.main-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      h1.page-main-title { margin-bottom: 0; }
+    }
+    h1.page-main-title {
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin: 0 0 1rem 0;
+    }
+    .main-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .main-controls .button-link {
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--primary);
+      background-color: var(--primary);
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      min-height: var(--touch-target-min-height);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .main-controls .button-link:hover { opacity: 0.9; }
+
+    iframe#appscriptFrame {
+      width: 100%;
+      min-height: 600px; /* Adjust as needed */
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <header class="main-header">
+      <h1 class="page-main-title">📅 My Reminders Dashboard</h1>
+      <div class="main-controls">
+        <!-- 
+            IMPORTANT: Replace 'YOUR_ADD_REMINDER_GITHUB_PAGE_URL' 
+            with the actual URL of your addReminder_github.html on GitHub Pages.
+            For example: https://yourusername.github.io/your-repo/addReminder_github.html 
+        -->
+        <a href="YOUR_ADD_REMINDER_GITHUB_PAGE_URL" class="button-link">➕ Add Reminder</a>
+      </div>
+    </header>
+
+    <!-- 
+        IMPORTANT: Replace 'YOUR_APPS_SCRIPT_WEB_APP_URL' 
+        with the deployed URL of your Google Apps Script web app.
+    -->
+    <iframe id="appscriptFrame" src="YOUR_APPS_SCRIPT_WEB_APP_URL">
+      Your browser does not support iframes. Please access the content directly.
+    </iframe>
+  </div>
+
+  <script>
+    // Optional: You can add JavaScript here to communicate with the iframe 
+    // if needed, using window.postMessage, but for basic display it's not required.
+    // For example, to refresh the iframe content from this parent page:
+    // function refreshIframe() {
+    //   const iframe = document.getElementById('appscriptFrame');
+    //   if (iframe) {
+    //     iframe.src = iframe.src; // Simple way to reload
+    //   }
+    // }
+  </script>
+</body>
+</html>
