@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Reminder - GitHub Hosted</title>
+  <style>
+    :root {
+      --bg-color: #f5f7fb; --card-bg: #ffffff; --primary: #007acc;
+      --text-main: #333333; --text-muted: #666666; --border-color: #e0e0e0;
+      --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05); --touch-target-min-height: 40px;
+    }
+    html { box-sizing: border-box; font-size: 100%; }
+    *, *:before, *:after { box-sizing: inherit; }
+    body {
+      margin: 0; padding: 1rem; font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      background-color: var(--bg-color); color: var(--text-main); display: flex;
+      flex-direction: column; align-items: center; min-height: 100vh;
+    }
+    .container {
+      width: 100%; max-width: 600px; margin: 2rem auto; padding: 2rem;
+      background-color: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow-light);
+    }
+    h2.page-title {
+      font-size: 1.8rem; color: var(--primary); margin: 0 0 1.5rem 0; text-align: center;
+      border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;
+    }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 500; font-size: 0.95rem; }
+    .form-group input[type="text"], .form-group textarea, .form-group input[type="date"] {
+      width: 100%; padding: 0.7rem; border: 1px solid var(--border-color);
+      border-radius: 6px; font-size: 1rem; min-height: var(--touch-target-min-height);
+    }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .checkbox-label { display: flex; align-items: center; font-weight: normal; font-size: 0.95rem; }
+    .checkbox-label input[type="checkbox"] { margin-right: 0.6rem; width: 20px; height: 20px; flex-shrink: 0; }
+    .form-footer {
+      text-align: right; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color);
+      display: flex; justify-content: flex-end; gap: 0.75rem;
+    }
+    .form-footer button, .form-footer a.button-link {
+      padding: 0.6rem 1.2rem; border-radius: 6px; border: 1px solid var(--border-color);
+      background-color: var(--card-bg); font-size: 0.95rem; cursor: pointer;
+      min-height: var(--touch-target-min-height); display: inline-flex;
+      align-items: center; justify-content: center; text-decoration: none; color: var(--text-main);
+    }
+    .form-footer button.primary { background-color: var(--primary); color: white; border-color: var(--primary); }
+    .form-footer button.primary:hover { opacity: 0.9; }
+    .form-footer a.button-link.cancel { background-color: var(--text-muted); color: white; border-color: var(--text-muted); }
+    .form-footer a.button-link.cancel:hover { opacity: 0.9; }
+    #alertMessage {
+        padding: 0.75rem; margin-bottom: 1rem; border: 1px solid transparent;
+        border-radius: .25rem; display: none;
+    }
+    #alertMessage.error { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="page-title">➕ Add New Reminder</h2>
+    <div id="alertMessage"></div>
+    <!-- 
+        IMPORTANT: Replace 'YOUR_APPS_SCRIPT_WEB_APP_URL' 
+        with the deployed URL of your Google Apps Script web app.
+    -->
+    <form id="addReminderForm" method="POST" action="YOUR_APPS_SCRIPT_WEB_APP_URL">
+      <div class="form-group">
+        <label for="newTitle">Reminder (Title):</label>
+        <input type="text" id="newTitle" name="newTitle" required>
+      </div>
+      <div class="form-group">
+        <label for="newDescription">Description:</label>
+        <textarea id="newDescription" name="newDescription"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="newDueDate">Date (Start Date for Repeating):</label>
+        <input type="date" id="newDueDate" name="newDueDate">
+      </div>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="newIsRepeating" name="newIsRepeating" value="true">
+          Repeat this task? (Uses day of month from 'Date')
+        </label>
+      </div>
+      <div class="form-group" id="endDateGroup" style="display: none;">
+        <label for="newEndDate">End Repeat On (Optional):</label>
+        <input type="date" id="newEndDate" name="newEndDate">
+      </div>
+      <div class="form-footer">
+        <!-- 
+            IMPORTANT: Replace 'YOUR_DASHBOARD_GITHUB_PAGE_URL' 
+            with the URL of your dashboard_github.html on GitHub Pages.
+            For example: https://yourusername.github.io/your-repo/dashboard_github.html
+        -->
+        <a href="YOUR_DASHBOARD_GITHUB_PAGE_URL" id="cancelAddBtn" class="button-link cancel">Cancel & Back to Dashboard</a>
+        <button type="submit" class="primary">Save Reminder</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const addReminderForm = document.getElementById("addReminderForm");
+    const newIsRepeatingCheckbox = document.getElementById("newIsRepeating");
+    const endDateGroup = document.getElementById("endDateGroup");
+    const newDueDateInput = document.getElementById("newDueDate");
+    const alertMessageDiv = document.getElementById("alertMessage");
+
+    function showAlert(message, type = 'error') {
+        alertMessageDiv.textContent = message;
+        alertMessageDiv.className = type;
+        alertMessageDiv.style.display = 'block';
+    }
+
+    newIsRepeatingCheckbox.addEventListener("change", () => {
+      endDateGroup.style.display = newIsRepeatingCheckbox.checked ? "block" : "none";
+      if (newIsRepeatingCheckbox.checked && !newDueDateInput.value) {
+        showAlert("Please set a 'Date' first to enable repeating.");
+        // Note: We don't uncheck it here as the submit validation will catch it.
+      } else {
+        alertMessageDiv.style.display = 'none';
+      }
+    });
+
+    addReminderForm.addEventListener("submit", (event) => {
+      const title = document.getElementById("newTitle").value.trim();
+      if (!title) {
+        event.preventDefault(); 
+        showAlert("Title is required.");
+        document.getElementById("newTitle").focus();
+        return;
+      }
+      if (newIsRepeatingCheckbox.checked && !newDueDateInput.value) {
+        event.preventDefault(); 
+        showAlert("A 'Date' is required if 'Repeat this task' is checked.");
+        newDueDateInput.focus();
+        return;
+      }
+    });
+    document.getElementById('newTitle').focus();
+  </script>
+</body>
+</html>
